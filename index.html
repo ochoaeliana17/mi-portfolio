@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brasileiro de Pereiró – Churrasqueira em Porto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0d0a08;
+      --coal:    #1a1410;
+      --ember:   #c0392b;
+      --gold:    #d4a853;
+      --cream:   #f5efe6;
+      --light:   #faf7f2;
+      --text:    #2c2318;
+      --muted:   #7a6a58;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem 5vw;
+      transition: background .4s, backdrop-filter .4s;
+    }
+    nav.scrolled {
+      background: rgba(13,10,8,.92);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--gold);
+      letter-spacing: .04em;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--cream);
+      font-size: .875rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .85;
+      transition: opacity .2s, color .2s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      text-align: center;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('assets/777-345w.webp') center/cover no-repeat;
+      transform: scale(1.08);
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(13,10,8,.55) 0%,
+        rgba(13,10,8,.35) 50%,
+        rgba(13,10,8,.85) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 780px; padding: 0 1.5rem;
+    }
+    .hero-badge {
+      display: inline-block;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: .35rem 1.1rem;
+      border-radius: 2rem;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp .8s .2s forwards;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      line-height: 1.08;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp .9s .45s forwards;
+    }
+    .hero h1 em { color: var(--gold); font-style: italic; }
+    .hero-sub {
+      margin-top: 1.25rem;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 300;
+      color: rgba(245,239,230,.8);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp .9s .7s forwards;
+    }
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp .9s .95s forwards;
+    }
+    .btn-primary {
+      background: var(--ember);
+      color: #fff;
+      padding: .85rem 2.2rem;
+      border-radius: .25rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .9rem;
+      letter-spacing: .05em;
+      transition: background .25s, transform .2s;
+    }
+    .btn-primary:hover { background: #a93226; transform: translateY(-2px); }
+    .btn-outline {
+      border: 1px solid rgba(245,239,230,.55);
+      color: var(--cream);
+      padding: .85rem 2.2rem;
+      border-radius: .25rem;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: .9rem;
+      letter-spacing: .05em;
+      transition: border-color .25s, color .25s, transform .2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    .scroll-hint {
+      position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      opacity: 0; animation: fadeIn 1s 1.8s forwards;
+      font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; color: rgba(245,239,230,.5);
+    }
+    .scroll-hint span { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--gold), transparent); }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* SECTIONS */
+    section { padding: 7rem 5vw; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(48px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-48px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0; transform: translateX(48px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    .section-label {
+      font-size: .72rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .75rem;
+    }
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    /* ABOUT */
+    .about { background: var(--coal); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .about-img {
+      position: relative;
+      border-radius: .5rem;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+    }
+    .about-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+    .about-img:hover img { transform: scale(1.04); }
+    .about-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      border: 1px solid rgba(212,168,83,.25);
+      border-radius: .5rem;
+      pointer-events: none;
+    }
+    .about-text { color: var(--cream); }
+    .about-text p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: rgba(245,239,230,.8);
+      margin: 1.5rem 0;
+    }
+    .about-stats {
+      display: flex; gap: 3rem; margin-top: 2.5rem;
+    }
+    .stat { text-align: center; }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: .78rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: .35rem;
+    }
+
+    /* SPECIALTIES */
+    .specialties { background: var(--black); }
+    .specialties-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+    .specialties-header p {
+      margin-top: 1rem;
+      color: rgba(245,239,230,.65);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .dishes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .dish-card {
+      position: relative;
+      border-radius: .5rem;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+    }
+    .dish-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+    .dish-card:hover img { transform: scale(1.07); }
+    .dish-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(13,10,8,.92) 0%, rgba(13,10,8,.1) 55%);
+    }
+    .dish-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.5rem;
+    }
+    .dish-tag {
+      font-size: .68rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .4rem;
+    }
+    .dish-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .dish-desc {
+      font-size: .82rem;
+      color: rgba(245,239,230,.7);
+      margin-top: .4rem;
+      line-height: 1.5;
+    }
+
+    /* EXPERIENCE */
+    .experience { background: var(--coal); }
+    .experience-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+    .experience-text h2 { margin-bottom: 1.5rem; }
+    .experience-text p {
+      color: rgba(245,239,230,.75);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 1.25rem;
+    }
+    .features { list-style: none; margin-top: 2rem; display: flex; flex-direction: column; gap: .9rem; }
+    .features li {
+      display: flex; align-items: center; gap: .85rem;
+      font-size: .95rem; color: rgba(245,239,230,.85);
+    }
+    .features li::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--ember);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .experience-img {
+      border-radius: .5rem; overflow: hidden;
+      aspect-ratio: 1/1;
+    }
+    .experience-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+    .experience-img:hover img { transform: scale(1.04); }
+
+    /* PRICE BANNER */
+    .price-banner {
+      background: var(--ember);
+      padding: 4rem 5vw;
+      text-align: center;
+    }
+    .price-banner .banner-label {
+      font-size: .85rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      opacity: .85;
+      margin-bottom: .75rem;
+      display: block;
+    }
+    .price-banner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #fff;
+    }
+    .price-banner .banner-sub {
+      margin-top: .75rem;
+      font-size: 1rem;
+      opacity: .85;
+      display: block;
+    }
+
+    /* INFO */
+    .info { background: var(--black); }
+    .info-intro { text-align: center; max-width: 600px; margin: 0 auto 3.5rem; }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .info-card {
+      background: var(--coal);
+      border-radius: .5rem;
+      padding: 2.5rem 2rem;
+      border: 1px solid rgba(255,255,255,.06);
+      transition: border-color .3s;
+    }
+    .info-card:hover { border-color: rgba(212,168,83,.35); }
+    .info-icon { font-size: 1.8rem; margin-bottom: 1.2rem; }
+    .info-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; margin-bottom: .85rem;
+      color: var(--gold);
+    }
+    .info-card p, .info-card a {
+      font-size: .9rem;
+      color: rgba(245,239,230,.7);
+      line-height: 1.75;
+      text-decoration: none;
+    }
+    .info-card a:hover { color: var(--gold); }
+
+    /* CONTACT */
+    .contact { background: var(--coal); text-align: center; }
+    .contact-inner { max-width: 650px; margin: 0 auto; }
+    .contact h2 { margin-bottom: 1rem; }
+    .contact .lead {
+      font-size: 1.05rem;
+      color: rgba(245,239,230,.7);
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+    .contact-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 2.5rem 5vw;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    footer .logo {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+    footer p { font-size: .8rem; color: rgba(245,239,230,.4); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .about-grid, .experience-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .dishes-grid { grid-template-columns: 1fr 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .about-stats { gap: 1.5rem; }
+      nav .nav-links { display: none; }
+    }
+    @media (max-width: 560px) {
+      .dishes-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo">Brasileiro de Pereiró</div>
+    <ul class="nav-links">
+      <li><a href="#sobre">Sobre Nós</a></li>
+      <li><a href="#especialidades">Especialidades</a></li>
+      <li><a href="#experiencia">Experiência</a></li>
+      <li><a href="#contacto">Reservas</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Porto · Churrasqueira de Referência</div>
+      <h1>Grelhados na <em>Brasa</em><br>como Deus manda</h1>
+      <p class="hero-sub">Sabor autêntico, preços acessíveis e ambiente familiar no coração do Porto.</p>
+      <div class="hero-cta">
+        <a href="tel:226172714" class="btn-primary">Reservar Mesa</a>
+        <a href="#especialidades" class="btn-outline">Ver Especialidades</a>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      Scroll
+      <span></span>
+    </div>
+  </section>
+
+  <!-- SOBRE NÓS -->
+  <section class="about" id="sobre">
+    <div class="about-grid">
+      <div class="about-img reveal-left">
+        <img
+          src="assets/images.jpg"
+          alt="Interior do restaurante Brasileiro de Pereiró"
+          loading="lazy"
+        />
+      </div>
+      <div class="about-text reveal-right">
+        <p class="section-label">A Nossa História</p>
+        <h2>Um espaço de<br><em style="font-style:italic;color:var(--gold)">referência</em> em Porto</h2>
+        <p>
+          O Churrasqueira Brasileiro de Pereiró é um espaço de referência para os apreciadores de grelhados na brasa. Cada prato é preparado na hora, com ingredientes selecionados e a dedicação de quem ama verdadeiramente cozinhar.
+        </p>
+        <p>
+          Ambiente familiar, serviço cordial e preços honestos. Parte do <strong style="color:var(--gold)">Grupo Boavista Churrasqueiras</strong>, uma referência na gastronomia do Porto.
+        </p>
+        <div class="about-stats">
+          <div class="stat">
+            <div class="stat-number">164</div>
+            <div class="stat-label">Lugares</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">13€</div>
+            <div class="stat-label">Preço Médio</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">★4+</div>
+            <div class="stat-label">Avaliação</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPECIALIDADES -->
+  <section class="specialties" id="especialidades">
+    <div class="specialties-header reveal">
+      <p class="section-label">O Melhor da Casa</p>
+      <h2>As nossas especialidades</h2>
+      <p>Grelhados preparados na hora, na tradição mais autêntica da churrasqueira portuguesa.</p>
+    </div>
+    <div class="dishes-grid">
+      <div class="dish-card reveal" style="transition-delay:.1s">
+        <img
+          src="assets/contribution_gallery.jpg"
+          alt="Frango Grelhado"
+          loading="lazy"
+        />
+        <div class="dish-overlay"></div>
+        <div class="dish-info">
+          <div class="dish-tag">Clássico da Casa</div>
+          <div class="dish-name">Frango Grelhado</div>
+          <div class="dish-desc">Frango suculento na brasa, servido com arroz, fritas e salada fresca.</div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:.22s">
+        <img
+          src="assets/caption.jpg"
+          alt="Picanha"
+          loading="lazy"
+        />
+        <div class="dish-overlay"></div>
+        <div class="dish-info">
+          <div class="dish-tag">Destaque</div>
+          <div class="dish-name">Picanha</div>
+          <div class="dish-desc">Corte nobre brasileiro, temperado e grelhado na brasa com maestria.</div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:.34s">
+        <img
+          src="https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80"
+          alt="Posta à Transmontana"
+          loading="lazy"
+        />
+        <div class="dish-overlay"></div>
+        <div class="dish-info">
+          <div class="dish-tag">Tradição</div>
+          <div class="dish-name">Posta à Transmontana</div>
+          <div class="dish-desc">Carne barrosã, a essência da tradição transmontana no seu prato.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIÊNCIA -->
+  <section class="experience" id="experiencia">
+    <div class="experience-inner">
+      <div class="experience-text reveal-left">
+        <p class="section-label">Porquê Escolher-nos</p>
+        <h2>Uma experiência que fica na memória</h2>
+        <p>
+          Mais do que uma refeição, o Brasileiro de Pereiró oferece um momento. O crepitar da brasa, o aroma que chega antes do prato, a conversa em torno da mesa.
+        </p>
+        <p>
+          Com capacidade para 164 pessoas e estacionamento próximo, somos a escolha ideal para grupos, celebrações e eventos especiais.
+        </p>
+        <ul class="features">
+          <li>Grelhados preparados na hora, sempre frescos</li>
+          <li>Estacionamento a menos de 200 metros</li>
+          <li>Reservas para grupos e aniversários</li>
+          <li>Pedidos antecipados por telefone</li>
+          <li>Sobremesas caseiras e carta de bebidas</li>
+          <li>Ambiente familiar e serviço cordial</li>
+        </ul>
+      </div>
+      <div class="experience-img reveal-right">
+        <img
+          src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=900&q=80"
+          alt="Grelhados na brasa"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICE BANNER -->
+  <div class="price-banner reveal">
+    <span class="banner-label">Qualidade com preço justo</span>
+    <h2>Refeição completa a partir de <strong>13€</strong></h2>
+    <span class="banner-sub">Grelhados na brasa · Sobremesas caseiras · Carta de bebidas</span>
+  </div>
+
+  <!-- INFORMAÇÕES -->
+  <section class="info" id="info">
+    <div class="info-intro">
+      <p class="section-label reveal">Onde Estamos</p>
+      <h2 class="reveal">Como Chegar &amp; Contactos</h2>
+    </div>
+    <div class="info-grid">
+      <div class="info-card reveal" style="transition-delay:.1s">
+        <div class="info-icon">📍</div>
+        <h3>Morada</h3>
+        <p>
+          Rua Conde Covilhã 1324<br>
+          4100-187 Porto<br>
+          Portugal<br><br>
+          <em style="color:rgba(245,239,230,.5);font-size:.82rem">Estacionamento a menos de 200m</em>
+        </p>
+      </div>
+      <div class="info-card reveal" style="transition-delay:.22s">
+        <div class="info-icon">📞</div>
+        <h3>Contactos</h3>
+        <p>
+          <a href="tel:226172714">226 172 714</a><br>
+          <a href="tel:220406539">220 406 539</a><br><br>
+          <a href="mailto:geral@grupoboavista.com">geral@grupoboavista.com</a>
+        </p>
+      </div>
+      <div class="info-card reveal" style="transition-delay:.34s">
+        <div class="info-icon">🍖</div>
+        <h3>Reservas &amp; Grupos</h3>
+        <p>
+          Capacidade para <strong style="color:var(--cream)">164 pessoas</strong><br><br>
+          Aceitamos reservas para grupos, aniversários e eventos especiais.<br><br>
+          Pedidos antecipados por telefone.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="contact" id="contacto">
+    <div class="contact-inner reveal">
+      <p class="section-label">Reservas</p>
+      <h2>Pronto para saborear<br><em style="color:var(--gold);font-style:italic">a melhor brasa do Porto?</em></h2>
+      <p class="lead">
+        Ligue-nos para reservar a sua mesa ou fazer um pedido antecipado. Estamos à sua espera com os grelhados na hora e o melhor ambiente familiar do Porto.
+      </p>
+      <div class="contact-btns">
+        <a href="tel:226172714" class="btn-primary">Ligar — 226 172 714</a>
+        <a href="mailto:geral@grupoboavista.com" class="btn-outline">Enviar Email</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logo">Brasileiro de Pereiró</div>
+    <p>Rua Conde Covilhã 1324 · 4100-187 Porto</p>
+    <p>Grupo Boavista Churrasqueiras</p>
+  </footer>
+
+  <script>
+    // Parallax hero
+    const heroBg = document.getElementById('heroBg');
+    window.addEventListener('scroll', () => {
+      heroBg.style.transform = `scale(1.08) translateY(${window.scrollY * 0.3}px)`;
+    }, { passive: true });
+
+    // Nav on scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right')
+      .forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
